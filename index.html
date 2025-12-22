@@ -12,20 +12,20 @@
       --text: rgba(255, 255, 255, 0.92);
       --muted: rgba(255, 255, 255, 0.72);
 
-      /* JS updates this to match the *visual* viewport on iOS */
+      
       --vh: 1vh;
     }
 
     html, body{
       height: 100%;
       margin: 0;
-      overflow: hidden; /* keep the background fixed; card will scroll */
+      overflow: hidden;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color: var(--text);
     }
 
     body{
-      /* Use dynamic viewport units where supported */
+      
       height: 100dvh;
       min-height: calc(var(--vh) * 100);
 
@@ -36,21 +36,21 @@
         linear-gradient(135deg, #ff5fbf 0%, #ff9adf 45%, #ff6fd1 100%);
     }
 
-    /* ==== NYAN CATS ==== */
+    
     #cats-layer{
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
 
-      /* Critical: tie the layer to the visual viewport height */
+    
       height: 100dvh;
       height: calc(var(--vh) * 100);
 
       z-index: 0;
       pointer-events: none;
 
-      /* Helps iOS repaint correctly when the browser UI changes */
+      
       transform: translateZ(0);
       will-change: transform;
     }
@@ -65,7 +65,7 @@
       will-change: left, top, transform;
     }
 
-    /* ==== CONTENT ==== */
+    
     .wrap{
       position: relative;
       z-index: 2;
@@ -87,7 +87,7 @@
       padding: 26px;
       box-sizing: border-box;
 
-      /* Mobile: let the card scroll instead of the page */
+    
       max-height: calc((var(--vh) * 100) - 48px);
       overflow: auto;
       -webkit-overflow-scrolling: touch;
@@ -180,7 +180,7 @@
       text-align: center;
     }
 
-    /* Extra mobile polish */
+    
     @media (max-width: 420px){
       .wrap{ padding: 16px; }
       .card{ width: calc(100vw - 32px); padding: 18px; border-radius: 18px; }
@@ -191,10 +191,10 @@
 </head>
 
 <body>
-  <!-- NYAN CATS -->
+
   <div id="cats-layer" aria-hidden="true"></div>
 
-  <!-- CONTENT -->
+  
   <div class="wrap">
     <div class="card">
       <div class="header">
@@ -280,7 +280,7 @@
     function rand(min, max) { return Math.random() * (max - min) + min; }
     function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
-    // Use iOS visual viewport when available (fixes the “utility row” issue)
+   
     function getVW() {
       return window.visualViewport ? window.visualViewport.width : window.innerWidth;
     }
@@ -288,7 +288,7 @@
       return window.visualViewport ? window.visualViewport.height : window.innerHeight;
     }
 
-    // Dynamic viewport height CSS var (fixes iOS Chrome/Safari UI show/hide)
+    
     function setVhVar() {
       const vh = getVH() * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
@@ -324,7 +324,7 @@
 
       cat.el.style.setProperty("--size", `${cat.size}px`);
 
-      // start just outside the screen, then fly across
+      // start just outside the screen, then fly across inward
       cat.x = dir === 1 ? -OFFSCREEN_PAD - cat.size : w + OFFSCREEN_PAD;
       cat.y = rand(20, Math.max(40, h - 40));
 
@@ -339,23 +339,23 @@
       cat.el.style.transform = `translateZ(0) rotate(${rot}deg) scaleX(${flip})`;
     }
 
-    // Build cats
+    
     for (let i = 0; i < CAT_COUNT; i++) cats.push(makeCat());
 
-    // Keep viewport vars in sync (this is the key fix)
+    
     setVhVar();
     window.addEventListener("resize", setVhVar, { passive: true });
     window.addEventListener("orientationchange", setVhVar, { passive: true });
 
     if (window.visualViewport) {
       window.visualViewport.addEventListener("resize", setVhVar, { passive: true });
-      // On iOS Chrome, UI show/hide can trigger viewport “scroll” events too
+     
       window.visualViewport.addEventListener("scroll", setVhVar, { passive: true });
     }
 
     let last = performance.now();
     function tick(now) {
-      const dt = Math.min(0.05, (now - last) / 1000); // clamp for stability
+      const dt = Math.min(0.05, (now - last) / 1000); 
       last = now;
 
       const w = getVW();
@@ -368,7 +368,7 @@
         cat.el.style.left = `${cat.x}px`;
         cat.el.style.top = `${cat.y}px`;
 
-        // If fully offscreen, respawn from the opposite side
+       
         if (
           cat.x < -cat.size - OFFSCREEN_PAD ||
           cat.x > w + OFFSCREEN_PAD ||
@@ -386,6 +386,7 @@
   </script>
 </body>
 </html>
+
 
 
 
