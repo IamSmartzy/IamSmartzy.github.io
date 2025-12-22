@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Martzy, About Me</title>
+
+  <style>
+    :root{
+      --card-bg: rgba(255, 255, 255, 0.12);
+      --card-border: rgba(255, 255, 255, 0.22);
+      --text: rgba(255, 255, 255, 0.92);
+      --muted: rgba(255, 255, 255, 0.72);
+    }
+
+    html, body{
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+    }
+
+    body{
+      background:
+        radial-gradient(circle at 20% 20%, #ffb6e6 0%, transparent 45%),
+        radial-gradient(circle at 80% 30%, #ffc3f0 0%, transparent 40%),
+        radial-gradient(circle at 40% 85%, #ff8fd6 0%, transparent 45%),
+        linear-gradient(135deg, #ff5fbf 0%, #ff9adf 45%, #ff6fd1 100%);
+    }
+
+    /* ==== NYAN CATS ==== */
+    #cats-layer{
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .nyan{
+      position: absolute;
+      width: var(--size, 240px);
+      user-select: none;
+      -webkit-user-drag: none;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,0.25));
+      transform-origin: 50% 50%;
+    }
+
+    /* ==== CONTENT ==== */
+    .wrap{
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .card{
+      width: min(820px, calc(100vw - 48px));
+      backdrop-filter: blur(14px);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 22px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      padding: 26px;
+    }
+
+    .header{
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .pfp{
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,255,255,0.45);
+      box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    h1{
+      margin: 0;
+      font-size: 30px;
+      letter-spacing: 0.2px;
+    }
+
+    .subtitle{
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .grid{
+      display: grid;
+      gap: 14px;
+    }
+
+    @media (min-width: 720px){
+      .grid{ grid-template-columns: 1fr 1fr; }
+    }
+
+    .panel{
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.10);
+      min-height: 96px;
+    }
+
+    .panel h2{
+      font-size: 14px;
+      margin: 0 0 8px 0;
+    }
+
+    .panel p, .panel li{
+      font-size: 13px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.82);
+      margin: 0;
+    }
+
+    .panel p + p{ margin-top: 10px; }
+
+    ul{ padding-left: 18px; margin: 0; }
+
+    .tag{
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      font-size: 13px;
+      color: rgba(255,255,255,0.90);
+    }
+
+    .spotify{
+      border-radius: 12px;
+      border: 0;
+      width: 100%;
+      height: 80px;
+      overflow: hidden;
+    }
+
+    .footer{
+      margin-top: 14px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.70);
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- NYAN CATS -->
+  <div id="cats-layer" aria-hidden="true"></div>
+
+  <!-- CONTENT -->
+  <div class="wrap">
+    <div class="card">
+      <div class="header">
+        <img class="pfp" src="assets/simon.png" alt="Profile picture" />
+        <h1>Hey, I’m Martzy</h1>
+        <div class="subtitle">This is me, no filter.</div>
+      </div>
+
+      <div class="grid">
+        <div class="panel">
+          <h2>About Me</h2>
+          <p>
+            I deal with depression + anxiety, and I was suicidal in the past.
+            I play Minecraft for fun, and I’m into Cry of Fear.
+            I have 1 parent, and I am also ugly (bp).
+            Right now I’m learning physics, Spanish, and Delphi.
+          </p>
+          <p>
+            I’ve learned architecture, basic modeling, C#, and Python.
+          </p>
+        </div>
+
+        <div class="panel">
+          <h2>Goals</h2>
+          <p>
+            My goal is to get somewhere in life, and to get rid of all my mistakes that haunt me.
+          </p>
+        </div>
+
+        <div class="panel">
+          <h2>Interests</h2>
+          <ul>
+            <li>Minecraft</li>
+            <li>Cry of Fear</li>
+            <li>Programming and learning new things</li>
+          </ul>
+        </div>
+
+        <div class="panel">
+          <h2>Contact</h2>
+          <p>Discord: <span class="tag">simonisreal_68992</span></p>
+        </div>
+
+        <div class="panel">
+          <h2>Right Now</h2>
+          <p>If I’m quiet, I’m probably gaming, coding, overthinking, or trying to figure out the next step.</p>
+        </div>
+
+        <div class="panel">
+          <h2>Favorite Music</h2>
+          <iframe
+            class="spotify"
+            src="https://open.spotify.com/embed/track/6WuFZ0M2CUKKTztzatz5mO?start=20&v=1"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+            title="Favorite song on Spotify">
+          </iframe>
+        </div>
+      </div>
+
+      <div class="footer">© Martzy</div>
+    </div>
+  </div>
+
+  <!-- NYAN SCRIPT -->
+  <script>
+    const NYAN_SRC = "https://media.tenor.com/vbOYK-N4uDYAAAAj/cat.gif";
+
+    const CAT_COUNT = 50;
+    const CAT_SIZE = 240;
+    const SIZE_JITTER = 70;
+    const SPEED_MIN = 220;
+    const SPEED_MAX = 420;
+    const ANGLE_MAX = 35;
+    const OFFSCREEN_PAD = 260;
+
+    const layer = document.getElementById("cats-layer");
+    const cats = [];
+
+    function rand(min, max) { return Math.random() * (max - min) + min; }
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+    function makeCat() {
+      const img = document.createElement("img");
+      img.className = "nyan";
+      img.src = NYAN_SRC;
+      img.alt = "";
+      img.draggable = false;
+      layer.appendChild(img);
+
+      const cat = { el: img };
+      respawn(cat);
+      return cat;
+    }
+
+    function respawn(cat) {
+      const w = innerWidth;
+      const h = innerHeight;
+      const dir = Math.random() < 0.5 ? 1 : -1;
+      const tilt = rand(-ANGLE_MAX, ANGLE_MAX);
+      const speed = rand(SPEED_MIN, SPEED_MAX);
+      const tiltRad = tilt * Math.PI / 180;
+
+      cat.vx = dir * Math.cos(tiltRad) * speed;
+      cat.vy = Math.sin(tiltRad) * speed;
+      cat.flipX = dir === -1;
+      cat.tiltDeg = tilt;
+      cat.size = clamp(CAT_SIZE + rand(-SIZE_JITTER, SIZE_JITTER), 160, 360);
+
+      cat.el.style.setProperty("--size", `${cat.size}px`);
+
+      cat.x = dir === 1 ? -OFFSCREEN_PAD - cat.size : w + OFFSCREEN_PAD;
+      cat.y = rand(40, h - 40);
+
+      applyTransform(cat);
+    }
+
+    function applyTransform(cat) {
+      const rot = cat.flipX ? -cat.tiltDeg : cat.tiltDeg;
+      const flip = cat.flipX ? -1 : 1;
+      cat.el.style.transform = `rotate(${rot}deg) scaleX(${flip})`;
+    }
+
+    for (let i = 0; i < CAT_COUNT; i++) cats.push(makeCat());
+
+    let last = performance.now();
+    function tick(now) {
+      const dt = (now - last) / 1000;
+      last = now;
+
+      const w = innerWidth;
+      const h = innerHeight;
+
+      for (const cat of cats) {
+        cat.x += cat.vx * dt;
+        cat.y += cat.vy * dt;
+        applyTransform(cat);
+
+        cat.el.style.left = `${cat.x}px`;
+        cat.el.style.top = `${cat.y}px`;
+
+        if (
+          cat.x < -cat.size - OFFSCREEN_PAD ||
+          cat.x > w + OFFSCREEN_PAD ||
+          cat.y < -cat.size - OFFSCREEN_PAD ||
+          cat.y > h + OFFSCREEN_PAD ||
+          cat.y > h + OFFSCREEN_PAD
+        ) {
+          respawn(cat);
+        }
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
+  </script>
+</body>
+</html>
