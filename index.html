@@ -16,12 +16,15 @@
     html, body{
       height: 100%;
       margin: 0;
-      overflow: hidden;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color: var(--text);
     }
 
     body{
+      /* allow scroll by default (mobile needs this) */
+      overflow-x: hidden;
+      overflow-y: auto;
+
       background:
         radial-gradient(circle at 20% 20%, #ffb6e6 0%, transparent 45%),
         radial-gradient(circle at 80% 30%, #ffc3f0 0%, transparent 40%),
@@ -44,16 +47,18 @@
       -webkit-user-drag: none;
       filter: drop-shadow(0 10px 18px rgba(0,0,0,0.25));
       transform-origin: 50% 50%;
+      opacity: 0.95;
     }
 
     /* ==== CONTENT ==== */
     .wrap{
       position: relative;
       z-index: 2;
-      height: 100%;
+      min-height: 100vh;
       display: grid;
       place-items: center;
       padding: 24px;
+      box-sizing: border-box;
     }
 
     .card{
@@ -64,6 +69,7 @@
       border-radius: 22px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.25);
       padding: 26px;
+      box-sizing: border-box;
     }
 
     .header{
@@ -109,6 +115,7 @@
       border: 1px solid rgba(255,255,255,0.18);
       background: rgba(0,0,0,0.10);
       min-height: 96px;
+      box-sizing: border-box;
     }
 
     .panel h2{
@@ -121,6 +128,8 @@
       line-height: 1.5;
       color: rgba(255,255,255,0.82);
       margin: 0;
+      overflow-wrap: anywhere; /* prevents long text from breaking layout */
+      word-break: break-word;
     }
 
     .panel p + p{ margin-top: 10px; }
@@ -135,6 +144,8 @@
       background: rgba(255,255,255,0.08);
       font-size: 13px;
       color: rgba(255,255,255,0.90);
+      max-width: 100%;
+      overflow-wrap: anywhere;
     }
 
     .spotify{
@@ -150,6 +161,56 @@
       font-size: 12px;
       color: rgba(255,255,255,0.70);
       text-align: center;
+    }
+
+    /* ===== MOBILE TUNING ===== */
+    @media (max-width: 520px){
+      .wrap{
+        padding: 14px;
+        place-items: start center; /* card starts near top */
+      }
+
+      .card{
+        width: 100%;
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      .pfp{
+        width: 72px;
+        height: 72px;
+      }
+
+      h1{
+        font-size: 22px;
+      }
+
+      .subtitle{
+        font-size: 13px;
+      }
+
+      .panel{
+        padding: 12px;
+        border-radius: 14px;
+        min-height: unset;
+      }
+
+      .panel h2{
+        font-size: 13px;
+      }
+
+      .panel p, .panel li, .tag{
+        font-size: 12.5px;
+      }
+
+      .spotify{
+        height: 92px; /* gives the embed a little more room */
+      }
+    }
+
+    /* Respect reduced motion (nice touch + mobile friendly) */
+    @media (prefers-reduced-motion: reduce){
+      #cats-layer{ display: none; }
     }
   </style>
 </head>
@@ -227,13 +288,16 @@
   <script>
     const NYAN_SRC = "https://media.tenor.com/vbOYK-N4uDYAAAAj/cat.gif";
 
-    const CAT_COUNT = 50;
-    const CAT_SIZE = 240;
-    const SIZE_JITTER = 70;
-    const SPEED_MIN = 220;
-    const SPEED_MAX = 420;
+    // Mobile performance scaling
+    const isMobile = window.matchMedia("(max-width: 520px)").matches;
+
+    const CAT_COUNT = isMobile ? 18 : 50;
+    const CAT_SIZE = isMobile ? 180 : 240;
+    const SIZE_JITTER = isMobile ? 40 : 70;
+    const SPEED_MIN = isMobile ? 160 : 220;
+    const SPEED_MAX = isMobile ? 320 : 420;
     const ANGLE_MAX = 35;
-    const OFFSCREEN_PAD = 260;
+    const OFFSCREEN_PAD = isMobile ? 200 : 260;
 
     const layer = document.getElementById("cats-layer");
     const cats = [];
@@ -266,7 +330,7 @@
       cat.vy = Math.sin(tiltRad) * speed;
       cat.flipX = dir === -1;
       cat.tiltDeg = tilt;
-      cat.size = clamp(CAT_SIZE + rand(-SIZE_JITTER, SIZE_JITTER), 160, 360);
+      cat.size = clamp(CAT_SIZE + rand(-SIZE_JITTER, SIZE_JITTER), 140, 360);
 
       cat.el.style.setProperty("--size", `${cat.size}px`);
 
@@ -295,7 +359,6 @@
       for (const cat of cats) {
         cat.x += cat.vx * dt;
         cat.y += cat.vy * dt;
-        applyTransform(cat);
 
         cat.el.style.left = `${cat.x}px`;
         cat.el.style.top = `${cat.y}px`;
@@ -304,7 +367,6 @@
           cat.x < -cat.size - OFFSCREEN_PAD ||
           cat.x > w + OFFSCREEN_PAD ||
           cat.y < -cat.size - OFFSCREEN_PAD ||
-          cat.y > h + OFFSCREEN_PAD ||
           cat.y > h + OFFSCREEN_PAD
         ) {
           respawn(cat);
@@ -315,7 +377,11 @@
     }
 
     requestAnimationFrame(tick);
+
+    // If orientation changes / resize, keep spawns sensible
+    window.addEventListener("resize", () => {
+      for (const cat of cats) respawn(cat);
+    });
   </script>
 </body>
 </html>
-
