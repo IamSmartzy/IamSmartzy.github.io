@@ -18,13 +18,14 @@
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color: var(--text);
+      /* Allow scrolling on mobile */
+      overflow-x: hidden;
     }
 
     body{
-      /* allow scroll by default (mobile needs this) */
-      overflow-x: hidden;
+      min-height: 100vh;
       overflow-y: auto;
-
+      -webkit-overflow-scrolling: touch;
       background:
         radial-gradient(circle at 20% 20%, #ffb6e6 0%, transparent 45%),
         radial-gradient(circle at 80% 30%, #ffc3f0 0%, transparent 40%),
@@ -35,9 +36,18 @@
     /* ==== NYAN CATS ==== */
     #cats-layer{
       position: fixed;
-      inset: 0;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
       z-index: 0;
       pointer-events: none;
+
+      /* IMPORTANT: prevents disappearing on scroll (mobile compositing) */
+      transform: translateZ(0);
+      will-change: transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      contain: layout paint;
     }
 
     .nyan{
@@ -47,7 +57,11 @@
       -webkit-user-drag: none;
       filter: drop-shadow(0 10px 18px rgba(0,0,0,0.25));
       transform-origin: 50% 50%;
-      opacity: 0.95;
+
+      /* Same idea: keep each cat composited smoothly */
+      will-change: transform, left, top;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
 
     /* ==== CONTENT ==== */
@@ -58,18 +72,17 @@
       display: grid;
       place-items: center;
       padding: 24px;
-      box-sizing: border-box;
     }
 
     .card{
       width: min(820px, calc(100vw - 48px));
       backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 22px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.25);
       padding: 26px;
-      box-sizing: border-box;
     }
 
     .header{
@@ -103,6 +116,7 @@
     .grid{
       display: grid;
       gap: 14px;
+      grid-template-columns: 1fr;
     }
 
     @media (min-width: 720px){
@@ -115,7 +129,6 @@
       border: 1px solid rgba(255,255,255,0.18);
       background: rgba(0,0,0,0.10);
       min-height: 96px;
-      box-sizing: border-box;
     }
 
     .panel h2{
@@ -128,8 +141,6 @@
       line-height: 1.5;
       color: rgba(255,255,255,0.82);
       margin: 0;
-      overflow-wrap: anywhere; /* prevents long text from breaking layout */
-      word-break: break-word;
     }
 
     .panel p + p{ margin-top: 10px; }
@@ -144,8 +155,6 @@
       background: rgba(255,255,255,0.08);
       font-size: 13px;
       color: rgba(255,255,255,0.90);
-      max-width: 100%;
-      overflow-wrap: anywhere;
     }
 
     .spotify{
@@ -163,54 +172,19 @@
       text-align: center;
     }
 
-    /* ===== MOBILE TUNING ===== */
-    @media (max-width: 520px){
-      .wrap{
-        padding: 14px;
-        place-items: start center; /* card starts near top */
-      }
-
+    /* Mobile polish */
+    @media (max-width: 480px){
+      .wrap{ padding: 16px; place-items: start center; }
       .card{
-        width: 100%;
+        width: calc(100vw - 32px);
         padding: 16px;
         border-radius: 18px;
+        margin-top: 16px;
       }
-
-      .pfp{
-        width: 72px;
-        height: 72px;
-      }
-
-      h1{
-        font-size: 22px;
-      }
-
-      .subtitle{
-        font-size: 13px;
-      }
-
-      .panel{
-        padding: 12px;
-        border-radius: 14px;
-        min-height: unset;
-      }
-
-      .panel h2{
-        font-size: 13px;
-      }
-
-      .panel p, .panel li, .tag{
-        font-size: 12.5px;
-      }
-
-      .spotify{
-        height: 92px; /* gives the embed a little more room */
-      }
-    }
-
-    /* Respect reduced motion (nice touch + mobile friendly) */
-    @media (prefers-reduced-motion: reduce){
-      #cats-layer{ display: none; }
+      .pfp{ width: 72px; height: 72px; }
+      h1{ font-size: 24px; }
+      .subtitle{ font-size: 13px; }
+      .panel{ padding: 12px; }
     }
   </style>
 </head>
@@ -288,16 +262,16 @@
   <script>
     const NYAN_SRC = "https://media.tenor.com/vbOYK-N4uDYAAAAj/cat.gif";
 
-    // Mobile performance scaling
-    const isMobile = window.matchMedia("(max-width: 520px)").matches;
+    // Performance: fewer cats on small screens
+    const isMobile = matchMedia("(max-width: 600px)").matches;
 
-    const CAT_COUNT = isMobile ? 18 : 50;
-    const CAT_SIZE = isMobile ? 180 : 240;
-    const SIZE_JITTER = isMobile ? 40 : 70;
-    const SPEED_MIN = isMobile ? 160 : 220;
-    const SPEED_MAX = isMobile ? 320 : 420;
+    const CAT_COUNT = isMobile ? 22 : 50;
+    const CAT_SIZE = isMobile ? 200 : 240;
+    const SIZE_JITTER = isMobile ? 50 : 70;
+    const SPEED_MIN = isMobile ? 180 : 220;
+    const SPEED_MAX = isMobile ? 340 : 420;
     const ANGLE_MAX = 35;
-    const OFFSCREEN_PAD = isMobile ? 200 : 260;
+    const OFFSCREEN_PAD = 260;
 
     const layer = document.getElementById("cats-layer");
     const cats = [];
@@ -321,6 +295,7 @@
     function respawn(cat) {
       const w = innerWidth;
       const h = innerHeight;
+
       const dir = Math.random() < 0.5 ? 1 : -1;
       const tilt = rand(-ANGLE_MAX, ANGLE_MAX);
       const speed = rand(SPEED_MIN, SPEED_MAX);
@@ -335,7 +310,7 @@
       cat.el.style.setProperty("--size", `${cat.size}px`);
 
       cat.x = dir === 1 ? -OFFSCREEN_PAD - cat.size : w + OFFSCREEN_PAD;
-      cat.y = rand(40, h - 40);
+      cat.y = rand(20, h - 20);
 
       applyTransform(cat);
     }
@@ -343,7 +318,9 @@
     function applyTransform(cat) {
       const rot = cat.flipX ? -cat.tiltDeg : cat.tiltDeg;
       const flip = cat.flipX ? -1 : 1;
-      cat.el.style.transform = `rotate(${rot}deg) scaleX(${flip})`;
+
+      // translateZ(0) helps keep it on a stable layer while scrolling
+      cat.el.style.transform = `translateZ(0) rotate(${rot}deg) scaleX(${flip})`;
     }
 
     for (let i = 0; i < CAT_COUNT; i++) cats.push(makeCat());
@@ -363,6 +340,7 @@
         cat.el.style.left = `${cat.x}px`;
         cat.el.style.top = `${cat.y}px`;
 
+        // If fully offscreen, respawn
         if (
           cat.x < -cat.size - OFFSCREEN_PAD ||
           cat.x > w + OFFSCREEN_PAD ||
@@ -378,10 +356,17 @@
 
     requestAnimationFrame(tick);
 
-    // If orientation changes / resize, keep spawns sensible
-    window.addEventListener("resize", () => {
-      for (const cat of cats) respawn(cat);
-    });
+    // If the browser resizes while scrolling (mobile address bar), keep cats stable
+    let resizeTimer = null;
+    addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        for (const cat of cats) {
+          // keep them from getting stuck after big viewport changes
+          if (cat.y > innerHeight + OFFSCREEN_PAD || cat.y < -OFFSCREEN_PAD) respawn(cat);
+        }
+      }, 120);
+    }, { passive: true });
   </script>
 </body>
 </html>
