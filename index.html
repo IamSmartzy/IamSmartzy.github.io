@@ -1,305 +1,218 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>IamSmartzy</title>
-  <style>
-    :root{
-      --bg1:#0b1020;
-      --bg2:#050713;
-      --card: rgba(0,0,0,.55);
-      --text: #e9ecff;
-      --muted: #b9c0ff;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>IamSmartzy</title>
 
-    html, body {
-      height: 100%;
-      margin: 0;
-      overflow: hidden;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--text);
-      background: radial-gradient(1200px 800px at 30% 20%, #18205a 0%, var(--bg1) 40%, var(--bg2) 100%);
-    }
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: radial-gradient(circle at 30% 20%, #18205a, #060716 70%);
+    color: #e9ecff;
+  }
 
-    /* Background star specks */
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      background:
-        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,.35) 50%, transparent 51%),
-        radial-gradient(1px 1px at 35% 70%, rgba(255,255,255,.25) 50%, transparent 51%),
-        radial-gradient(1px 1px at 80% 30%, rgba(255,255,255,.30) 50%, transparent 51%),
-        radial-gradient(1px 1px at 60% 85%, rgba(255,255,255,.22) 50%, transparent 51%),
-        radial-gradient(1px 1px at 55% 40%, rgba(255,255,255,.18) 50%, transparent 51%),
-        radial-gradient(1px 1px at 92% 62%, rgba(255,255,255,.22) 50%, transparent 51%);
-      opacity:.9;
-      pointer-events:none;
-    }
+  /* NYAN BACKGROUND */
+  #nyan-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
 
-    /* Layering */
-    #nyan-layer{
-      position: fixed;
-      inset: 0;
-      z-index: 1; /* behind the card */
-      pointer-events: none;
-    }
+  .nyan {
+    position: absolute;
+    width: 96px;
+    height: 64px;
+    will-change: transform;
+  }
 
-    .nyan {
-      position: absolute;
-      width: 96px;
-      height: 64px;
-      will-change: transform, left, top;
-      filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
-    }
+  .trail {
+    position: absolute;
+    top: 26px;
+    height: 16px;
+    border-radius: 10px;
+    background: linear-gradient(
+      90deg,
+      #ff3b3b,
+      #ff8c2a,
+      #ffe14a,
+      #36e06c,
+      #3ec5ff,
+      #4a57ff,
+      #bf4aff
+    );
+    filter: blur(0.3px);
+    opacity: 0.95;
+  }
 
-    /* The rainbow trail is a separate element so it can sit behind the cat */
-    .trail{
-      position:absolute;
-      top: 26px;
-      height: 16px;
-      border-radius: 10px;
-      opacity: .95;
-      filter: blur(.2px);
-      background: linear-gradient(90deg,
-        #ff3b3b 0%,
-        #ff8c2a 16%,
-        #ffe14a 33%,
-        #36e06c 50%,
-        #3ec5ff 66%,
-        #4a57ff 83%,
-        #bf4aff 100%
-      );
-    }
+  .cat {
+    position: absolute;
+    inset: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    image-rendering: auto;
+  }
 
-    /* The nyan image itself */
-    .cat{
-      position:absolute;
-      inset:0;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      image-rendering: auto;
-    }
+  .left .cat  { transform: scaleX(-1); }
+  .right .cat { transform: scaleX(1); }
 
-    /* Flip when running left */
-    .left  .cat { transform: scaleX(-1); }
-    .right .cat { transform: scaleX(1); }
+  /* ABOUT CARD */
+  .wrap {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+  }
 
-    /* About card */
-    .wrap{
-      position: relative;
-      z-index: 2; /* above nyans */
-      height: 100%;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-    }
+  .card {
+    width: min(720px, 92vw);
+    background: rgba(0,0,0,.55);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 18px;
+    backdrop-filter: blur(10px);
+    padding: 22px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.45);
+  }
 
-    .card{
-      width: min(720px, 92vw);
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 18px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.45);
-      backdrop-filter: blur(10px);
-      padding: 22px 22px 18px;
-    }
+  h1 {
+    margin: 0;
+    font-size: 30px;
+  }
 
-    .title{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      margin-bottom: 10px;
-    }
+  p {
+    margin-top: 10px;
+    line-height: 1.6;
+    color: #cfd6ff;
+  }
 
-    .badge{
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, rgba(62,197,255,.9), rgba(191,74,255,.9));
-      display:grid;
-      place-items:center;
-      font-weight: 800;
-      color: #061025;
-      box-shadow: 0 10px 30px rgba(62,197,255,.22);
-    }
+  .links {
+    margin-top: 14px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
 
-    h1{
-      margin:0;
-      font-size: 28px;
-      letter-spacing: .2px;
-    }
+  .btn {
+    text-decoration: none;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.06);
+    padding: 10px 12px;
+    border-radius: 12px;
+  }
 
-    p{
-      margin: 10px 0 0;
-      line-height: 1.55;
-      color: var(--muted);
-      font-size: 16px;
-    }
-
-    .links{
-      margin-top: 16px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-    }
-
-    a.btn{
-      text-decoration:none;
-      color: var(--text);
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      padding: 10px 12px;
-      border-radius: 12px;
-      transition: transform .12s ease, background .12s ease;
-    }
-    a.btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
-    .tiny{
-      margin-top: 12px;
-      font-size: 12px;
-      opacity: .75;
-    }
-
-    /* Mobile tune */
-    @media (max-width: 520px){
-      .nyan{ width: 80px; height: 54px; }
-      h1{ font-size: 24px; }
-    }
-  </style>
+  .btn:hover {
+    background: rgba(255,255,255,.12);
+  }
+</style>
 </head>
+
 <body>
-  <div id="nyan-layer" aria-hidden="true"></div>
 
-  <main class="wrap">
-    <section class="card">
-      <div class="title">
-        <div class="badge">S</div>
-        <div>
-          <h1>Hey, I’m Smartzy 👋</h1>
-          <p>Welcome to my site. I’m into coding, building projects, and making cool stuff online.</p>
-        </div>
-      </div>
+<div id="nyan-layer"></div>
 
-      <p>
-        This is my little “about me” page — with Nyan Cats running behind it because why not.
-        I’ll keep adding more here (projects, socials, whatever).
-      </p>
+<div class="wrap">
+  <div class="card">
+    <h1>Hey, I’m Smartzy 👋</h1>
+    <p>
+      Welcome to my site. I like coding, building projects, and making cool stuff online.
+      This is my personal space — with Nyan Cats running around because that’s important.
+    </p>
 
-      <div class="links">
-        <a class="btn" href="https://github.com/IamSmartzy" target="_blank" rel="noreferrer">GitHub</a>
-        <a class="btn" href="https://iamsmartzy.github.io" target="_blank" rel="noreferrer">Home</a>
-      </div>
+    <div class="links">
+      <a class="btn" href="https://github.com/IamSmartzy" target="_blank">GitHub</a>
+      <a class="btn" href="https://iamsmartzy.github.io" target="_blank">Home</a>
+    </div>
+  </div>
+</div>
 
-      <div class="tiny">Tip: edit this text in <b>index.html</b> in your GitHub repo.</div>
-    </section>
-  </main>
+<script>
+  const CAT_GIF = "https://media.giphy.com/media/sIIhZliB2McAo/giphy.gif";
+  const CAT_COUNT = 14;
+  const cats = [];
+  const layer = document.getElementById("nyan-layer");
 
-  <script>
-    // --- SETTINGS ---
-    const CAT_GIF = "https://media.giphy.com/media/sIIhZliB2McAo/giphy.gif"; // nyan cat gif
-    const CAT_COUNT = 10;     // how many cats
-    const BASE_SPEED = 1.6;   // horizontal speed
-    const SPEED_JITTER = 1.4; // random add-on speed
-    const BOB_AMPLITUDE = 12; // vertical bob amount
-    const BOB_SPEED = 0.035;  // bob speed
+  const W = () => window.innerWidth;
+  const H = () => window.innerHeight;
 
-    const layer = document.getElementById("nyan-layer");
-    const W = () => window.innerWidth;
-    const H = () => window.innerHeight;
+  function rand(min, max) {
+    return Math.random() * (max - min) + min;
+  }
 
-    function makeCat(i){
-      const el = document.createElement("div");
-      el.className = "nyan right";
-      el.style.left = (Math.random() * (W()-120)) + "px";
-      el.style.top  = (Math.random() * (H()-120)) + "px";
+  function createCat() {
+    const el = document.createElement("div");
+    el.className = "nyan right";
 
-      const trail = document.createElement("div");
-      trail.className = "trail";
+    const trail = document.createElement("div");
+    trail.className = "trail";
 
-      const cat = document.createElement("div");
-      cat.className = "cat";
-      cat.style.backgroundImage = `url("${CAT_GIF}")`;
+    const cat = document.createElement("div");
+    cat.className = "cat";
+    cat.style.backgroundImage = `url("${CAT_GIF}")`;
 
-      el.appendChild(trail);
-      el.appendChild(cat);
-      layer.appendChild(el);
+    el.appendChild(trail);
+    el.appendChild(cat);
+    layer.appendChild(el);
 
-      // State: ONLY horizontal movement + vertical bobbing (no drifting angles)
-      const state = {
-        el, trail,
-        x: Math.random() * (W()-120),
-        y: Math.random() * (H()-120),
-        dir: Math.random() > 0.5 ? 1 : -1,           // 1 = right, -1 = left
-        speed: BASE_SPEED + Math.random() * SPEED_JITTER,
-        bobPhase: Math.random() * Math.PI * 2,
-        baseY: Math.random() * (H()-160) + 60
-      };
+    const size = rand(70, 110);
+    el.style.width = size + "px";
+    el.style.height = size + "px";
 
-      // Place cats in back visually with random scale (depth feel)
-      const scale = 0.8 + Math.random() * 0.6;
-      el.dataset.scale = scale;
+    return {
+      el,
+      trail,
+      size,
+      x: rand(0, W() - size),
+      y: rand(0, H() - size),
+      vx: rand(-3, 3) || 2,
+      vy: rand(-3, 3) || 2
+    };
+  }
 
-      return state;
-    }
+  for (let i = 0; i < CAT_COUNT; i++) {
+    cats.push(createCat());
+  }
 
-    const cats = Array.from({length: CAT_COUNT}, (_, i) => makeCat(i));
+  function animate() {
+    const w = W();
+    const h = H();
 
-    function tick(){
-      const w = W(), h = H();
+    for (const c of cats) {
+      c.x += c.vx;
+      c.y += c.vy;
 
-      for (const c of cats){
-        // Horizontal run
-        c.x += c.dir * c.speed;
+      if (c.x <= 0 || c.x + c.size >= w) c.vx *= -1;
+      if (c.y <= 0 || c.y + c.size >= h) c.vy *= -1;
 
-        // Bounce edges and flip
-        if (c.x < -110){ c.dir = 1; c.x = -110; }
-        if (c.x > w + 110){ c.dir = -1; c.x = w + 110; }
+      c.el.classList.toggle("right", c.vx > 0);
+      c.el.classList.toggle("left", c.vx < 0);
 
-        // Bob up/down while running (still "running" left/right)
-        c.bobPhase += BOB_SPEED;
-        c.y = c.baseY + Math.sin(c.bobPhase) * BOB_AMPLITUDE;
-
-        // Keep within vertical bounds by gently wrapping baseY
-        if (c.baseY < 50) c.baseY = 50;
-        if (c.baseY > h - 90) c.baseY = h - 90;
-
-        // Apply class for facing direction
-        c.el.classList.toggle("right", c.dir === 1);
-        c.el.classList.toggle("left",  c.dir === -1);
-
-        // Scale depth
-        const scale = parseFloat(c.el.dataset.scale || "1");
-
-        // Rainbow trail sizing (longer when faster)
-        const trailLen = 90 + c.speed * 35;
-
-        // Trail sits behind cat, on opposite side of direction
-        if (c.dir === 1){
-          // running right => trail to the left
-          c.trail.style.left = (-trailLen + 18) + "px";
-          c.trail.style.right = "auto";
-        } else {
-          // running left => trail to the right
-          c.trail.style.left = "auto";
-          c.trail.style.right = (-trailLen + 18) + "px";
-        }
-        c.trail.style.width = trailLen + "px";
-
-        // Position cat
-        c.el.style.transform = `translate(${c.x}px, ${c.y}px) scale(${scale})`;
+      const trailLength = 110;
+      if (c.vx > 0) {
+        c.trail.style.left = (-trailLength + 18) + "px";
+        c.trail.style.right = "auto";
+      } else {
+        c.trail.style.right = (-trailLength + 18) + "px";
+        c.trail.style.left = "auto";
       }
 
-      requestAnimationFrame(tick);
+      c.trail.style.width = trailLength + "px";
+      c.el.style.transform = `translate(${c.x}px, ${c.y}px)`;
     }
 
-    tick();
+    requestAnimationFrame(animate);
+  }
 
-    // Keep it responsive
-    window.addEventListener("resize", () => {
-      // nothing needed; next frame uses new W/H
-    });
-  </script>
+  animate();
+</script>
+
 </body>
 </html>
